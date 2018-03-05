@@ -92,10 +92,28 @@ def get_mapped_images():
          
     return images
 
+def is_formatted(device):
+    output = None
+    try:
+        output = subprocess.check_output(["/usr/bin/lsblk", "--output", "FSTYPE", "-n", "-f", device])
+    except Exception as e:
+        logging.error("Check the filesystem of %s failed: %s", device, e)
+        return False
+
+    fs = output.strip()
+    if fs == "":
+        logging.error("Device %s is unformatted: %s")
+        return False
+
+    return True
+
 def mount(device, path):
     if os.path.ismount(path):
         logging.info('Mount point %s is mount, skip mount', path)
         return True
+
+    if not is_formatted(device):
+        return False
 
     logging.info('Mount %s to %s', device, path)
     try:  
