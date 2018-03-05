@@ -102,7 +102,7 @@ def is_formatted(device):
 
     fs = output.strip()
     if fs == "":
-        logging.error("Device %s is unformatted: %s")
+        logging.error("Device %s is unformatted", device)
         return False
 
     return True
