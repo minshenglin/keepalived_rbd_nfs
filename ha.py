@@ -24,7 +24,7 @@ class RepoSetting(object):
 def start_nfs_server():
     logging.info('Starting NFS server...')
     try:  
-        subprocess.check_call(["/bin/systemctl", "restart", "nfs-kernel-server"])
+        subprocess.check_call(["/bin/systemctl", "restart", "nfs-server"])
     except Exception as e:
         logging.error("Start NFS server failed: %s", e)
         sys.exit(1)
@@ -34,7 +34,7 @@ def start_nfs_server():
 def stop_nfs_server():
     logging.info('Stopping NFS server...')
     try:  
-        subprocess.check_call(["/bin/systemctl", "stop", "nfs-kernel-server"])
+        subprocess.check_call(["/bin/systemctl", "stop", "nfs-server"])
     except Exception as e:
         logging.error("Stop NFS server failed: %s", e)
         sys.exit(1)
