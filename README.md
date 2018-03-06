@@ -50,7 +50,7 @@ rbd unmap test
 * 安裝 Keepalived 和 nfs server
 
 ```
-sudo apt-get install keepalived nfs-kernel-server -y
+sudo yum install keepalived nfs-utils -y
 ```
 
 * 確認 /etc/ceph 底下有 ceph.conf 和 admin keyring
