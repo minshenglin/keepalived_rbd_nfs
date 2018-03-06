@@ -222,18 +222,18 @@ def remove_export(setting):
 
 
 def wait_previous_process_done(program_name):
-    counter = 10
-    while(counter > 0):
-        try:
-            rc = subprocess.check_call(["/usr/bin/pgrep", "-a", "python", "|", "grep", name])
-            if rc == 0:
-                break
-            counter -= 1
-            time.sleep(1)
-        except Exception as e:
-            logging.info('Check previous process failed, retry...')
+    pid = os.getpid()
 
-    logging.error('Can not check previous process')
+    counter = 60
+    while(counter > 0):
+        time.sleep(1)
+        output = subprocess.check_output(["/usr/bin/pgrep", "-a", "python"])
+        for line in output.split('\n'):
+            if program_name in line and pid in line:
+                return
+        counter -= 1
+
+    logging.error('Previous process is not over after 60 seconds')
     sys.exit(1)
 
 if __name__ == '__main__':
