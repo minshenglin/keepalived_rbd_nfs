@@ -131,6 +131,12 @@ def umount(path):
         return True
    
     logging.info('Umount %s', path)
+
+    try:
+        rc = subprocess.check_call(["fuser", "-s", "-k", path]) 
+    except Exception as e:
+        logging.error("Evict user on path %s failed: %s", path, e)
+
     try:  
         rc = subprocess.check_call(["/bin/umount", "-l" , path])
     except Exception as e:
