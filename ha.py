@@ -229,7 +229,7 @@ def wait_previous_process_done(program_name):
         time.sleep(1)
         output = subprocess.check_output(["/usr/bin/pgrep", "-a", "python"])
         for line in output.split('\n'):
-            if program_name in line and pid in line:
+            if program_name in line and str(pid) in line:
                 return
         counter -= 1
 
