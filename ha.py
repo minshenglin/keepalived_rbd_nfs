@@ -248,6 +248,7 @@ if __name__ == '__main__':
 
     wait_previous_process_done(sys.argv[0])
 
+    state = sys.argv[1].lower() 
     logging.info('Change to %s state...' % state)
 
     if state == 'master':
