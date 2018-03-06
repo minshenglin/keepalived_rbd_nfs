@@ -220,6 +220,22 @@ def remove_export(setting):
      
      logging.info('NFS export %s has been removed', setting.path)
 
+
+def wait_previous_process_done(program_name):
+    counter = 10
+    while(counter > 0):
+        try:
+            rc = subprocess.check_call(["/usr/bin/pgrep", "-a", "python", "|", "grep", name])
+            if rc == 0:
+                break
+            counter -= 1
+            time.sleep(1)
+        except Exception as e:
+            logging.info('Check previous process failed, retry...')
+
+    logging.error('Can not check previous process')
+    sys.exit(1)
+
 if __name__ == '__main__':
 
     if len(sys.argv) < 2:
@@ -230,9 +246,7 @@ if __name__ == '__main__':
         print "Permission denied, you need to change root or use sudo"
         sys.exit(1)
 
-    state = sys.argv[1].lower()
-    if state == 'master':
-        time.sleep(10) # prevent overlap between backup to master state
+    wait_previous_process_done(sys.argv[0])
 
     logging.info('Change to %s state...' % state)
 
