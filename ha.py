@@ -221,17 +221,22 @@ def remove_export(setting):
      logging.info('NFS export %s has been removed', setting.path)
 
 
-def wait_previous_process_done(program_name):
+def has_previous_process(program_name):
     pid = os.getpid()
+    output = subprocess.check_output(["/usr/bin/pgrep", "-a", "python"])
+    for line in output.split('\n'):
+        if str(pid) not in line and program_name in line:
+            return True
 
+    return False
+
+def wait_previous_process_done(program_name):
     counter = 60
     while(counter > 0):
-        time.sleep(1)
-        output = subprocess.check_output(["/usr/bin/pgrep", "-a", "python"])
-        for line in output.split('\n'):
-            if program_name in line and str(pid) in line:
-                return
+        if not has_previous_process(program_name):
+            return
         counter -= 1
+        time.sleep(1)
 
     logging.error('Previous process is not over after 60 seconds')
     sys.exit(1)
