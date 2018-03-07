@@ -130,10 +130,11 @@ def umount(path):
    
     logging.info('Evict all users on %s', path)
     try:
-        rc = subprocess.check_call(["/usr/sbin/fuser", "-ksm",  path]) # evict user from mount point
+        subprocess.check_call(["/usr/sbin/fuser", "-ksm",  path]) # evict user from mount point
     except Exception as e:
-        if rc != 1:
+        if e.returncode != 1: # return 1 if no user on mount point
             logging.error("Evict failed: %s", e)
+            return False
 
     logging.info('Umount %s', path)
     try:  
