@@ -15,11 +15,10 @@ logging.basicConfig(level=logging.INFO, filename=log_path,
     format='[%(asctime)s][%(levelname)-5s] %(message)s', datefmt="%Y-%m-%d %H:%M:%S")
 
 class RepoSetting(object):
-    def __init__(self, image=None, path=None, nfs_cidr=None, nfs_option=None):
+    def __init__(self, image=None, path=None, hosts=None):
         self.image = image
         self.path = path
-        self.nfs_cidr = nfs_cidr
-        self.nfs_option = nfs_option
+        self.hosts = hosts
 
 def start_nfs_server():
     logging.info('Starting NFS server...')
@@ -78,8 +77,7 @@ def load_repo_setting(config, name):
   
     return RepoSetting(image=s["image"], 
                        path=s["path"], 
-                       nfs_cidr=s["nfs_cidr"], 
-                       nfs_option=s["nfs_option"])
+                       hosts=s["hosts"])
 
 def get_mapped_images():
     images = dict()
@@ -191,7 +189,7 @@ def unmapping(mapped_images, image):
 
 def add_export(setting):
      logging.info('Adding NFS export %s', setting.path)
-     export = "%s %s(%s)" % (setting.path, setting.nfs_cidr, setting.nfs_option)
+     export = "%s %s" % (setting.path, setting.hosts)
      lines = None
      with open('/etc/exports', 'r') as f:
          lines = f.readlines()
@@ -212,14 +210,13 @@ def remove_export(setting):
      with open('/etc/exports', 'r') as f:
          lines = f.readlines()
 
-     export = "%s %s(%s)" % (setting.path, setting.nfs_cidr, setting.nfs_option)
+     export = "%s %s" % (setting.path, setting.hosts)
      with open('/etc/exports', 'w') as f:
          for line in lines:
              if export in line:
                  continue
              f.write(line.strip() + '\n')
 
-     
      logging.info('NFS export %s has been removed', setting.path)
 
 
